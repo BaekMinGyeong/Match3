@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 namespace Match3
@@ -73,6 +74,26 @@ namespace Match3
             }
 
             scoreText.enabled = true;
+            StartCoroutine(IncrementScore());
+        }
+
+        private IEnumerator IncrementScore()
+        {
+            int displayedScore = 0;
+            int finalScore = int.Parse(scoreText.text);  // 현재 표시된 최종 점수 가져오기
+            float duration = 1.5f;  // 점수 증가 시간 (1.5초)
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                displayedScore = Mathf.FloorToInt(Mathf.Lerp(0, finalScore, elapsed / duration));  // 점수 증가 계산
+                scoreText.text = displayedScore.ToString();  // 스코어 텍스트 업데이트
+                yield return null;  // 한 프레임 대기
+            }
+
+            // 최종 점수를 다시 정확하게 설정
+            scoreText.text = finalScore.ToString();
         }
 
         public void OnReplayClicked()
